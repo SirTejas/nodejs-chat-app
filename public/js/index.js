@@ -1,5 +1,6 @@
 const socket = io();
 
+
 socket.on('connect',()=>{
     console.log('connected to server');
 
@@ -13,21 +14,22 @@ socket.on('newMessage',(data)=>{
     console.log(data);
 
     let li = jQuery('<li></li>');
-    li.text(`${data.from} : ${data.text}`);
+    li.text(`${data.from} ${data.createdAt} : ${data.text}`);
     jQuery('#messages').append(li);
+
 
 });
 
 socket.on('userConnected',(data) =>{
     let li = jQuery('<li></li>');
-    li.text(`${data.text}`);
+    li.text(`${data.from} ${data.createdAt} : ${data.text}`);
     jQuery('#messages').append(li);
 });
 
 socket.on('userDisconnected',(data)=>{
     let li = jQuery('<li></li>');
 
-    li.text(`${data.text}`);
+    li.text(`${data.from} ${data.createdAt} : ${data.text}`);
     jQuery('#messages').append(li);
 })
 
@@ -38,6 +40,9 @@ jQuery('#message-form').on('submit',function(e){
 
     socket.emit('newMessage',{
         from : 'User',
-        text : jQuery('[name = message]').val()
+        text : jQuery('[name = message]').val(),
+        createdAt : moment().format('h:mm a  Do MMM YYYY')
+    },function(){
+        jQuery('[name = message]').val('');
     });
 });
