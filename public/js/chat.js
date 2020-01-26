@@ -18,11 +18,29 @@ function scrollToBottom() {
 }
 
 socket.on('connect',()=>{
-    console.log('connected to server');
+    console.log('connected to server')
+   let params = jQuery.deparam(window.location.search);
 
-    let li = jQuery('<li></li>');
-    li.text('Connected To Server');
-    jQuery('#messages').append(`<h4>${li.text()}</h4>`);
+   socket.emit('join', params, function (err) {
+        if(err){
+            alert(err);
+            window.location.href = '/'
+        }else{
+            console.log('No err');
+        }
+   })
+})
+
+socket.on('serverMessage',(serverMessage) => {
+    let template = jQuery('#message-template').html();
+    let html = Mustache.render(template,{
+        from : serverMessage.from,
+        text : serverMessage.text,
+        createdAt : serverMessage.createdAt
+    });
+
+    jQuery('#messages').append(html);
+    scrollToBottom();
 })
 
 socket.on('newMessage',(data)=>{
