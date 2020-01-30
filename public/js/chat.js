@@ -79,12 +79,12 @@ socket.on('userDisconnected',(data)=>{
 })
 
 
-
+let params = jQuery.deparam(window.location.search);
 jQuery('#message-form').on('submit',function(e){
     e.preventDefault();
 
     socket.emit('newMessage',{
-        from : 'User',
+        from : params.name,
         text : jQuery('[name = message]').val(),
         createdAt : moment().format('h:mm a  Do MMM YYYY')
     },function(){
